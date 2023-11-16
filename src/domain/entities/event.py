@@ -1,8 +1,14 @@
 import uuid
 from datetime import datetime
 
-from src.domain.vo.events_args import EventTime, Venue, Location, Title, Time, \
-    Participants
+from src.domain.vo.events_args import (
+    EventTime,
+    Venue,
+    Location,
+    Title,
+    Time,
+    Participants,
+)
 
 
 class Event:
@@ -25,6 +31,52 @@ class Event:
         self.venue = venue
         self.creation_time = creation_time
         self.modify_time = modify_time
+
+    def update_time(self, new_time: EventTime):
+        """
+        Update event's time
+        :param new_time: the new event's time
+        :return:
+        """
+        self.event_time = new_time
+        self.modify_time = Time(value=datetime.now())
+
+    def update_title(self, new_title: Title):
+        """
+        Update event's title
+        :param new_title: the event's new title
+        :return:
+        """
+        self.title = new_title
+        self.modify_time = Time(value=datetime.now())
+
+    def update_participants(self, new_number_of_participants: Participants):
+        """
+        Update event's number of participants
+        :param new_number_of_participants: the new number of participants in
+        the event
+        :return:
+        """
+        self.number_of_participants = new_number_of_participants
+        self.modify_time = Time(value=datetime.now())
+
+    def update_location(self, new_location: Location):
+        """
+        Update event's location
+        :param new_location:
+        :return:
+        """
+        self.location = new_location
+        self.modify_time = Time(value=datetime.now())
+
+    def update_venue(self, new_venue: Venue):
+        """
+        Update event's venue
+        :param new_venue: the new event's venue
+        :return:
+        """
+        self.venue = new_venue
+        self.modify_time = Time(value=datetime.now())
 
     @classmethod
     def create(

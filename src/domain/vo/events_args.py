@@ -45,8 +45,11 @@ class Participants(BaseVO):
         Validate that the number is positive
         :return:
         """
-        if type(self.value) is not int or self.value < 0 or \
-                self.value > 10 ** 200:
+        if (
+            type(self.value) is not int
+            or self.value < 0
+            or self.value > 10**200
+        ):
             raise ValueError
 
 

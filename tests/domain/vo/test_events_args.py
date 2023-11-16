@@ -4,8 +4,14 @@ from typing import Any
 
 import pytest
 
-from src.domain.vo.events_args import Title, Location, Venue, EventTime, Time, \
-    Participants
+from src.domain.vo.events_args import (
+    Title,
+    Location,
+    Venue,
+    EventTime,
+    Time,
+    Participants,
+)
 
 
 @pytest.mark.parametrize("title", ("test_title", ""))
