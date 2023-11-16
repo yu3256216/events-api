@@ -59,3 +59,13 @@ class AbstractEventsRepo(ABC):
         :return: the found events in the repo
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def update(self, event_id: uuid.UUID, new_event: Event):
+        """
+        Update the event in the repository
+        :param event_id: the id of the event to update
+        :param new_event: the new values of the event
+        :return: the found events in the repo
+        """
+        raise NotImplementedError
