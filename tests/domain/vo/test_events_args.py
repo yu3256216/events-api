@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
 import time
+from typing import Any
 
 import pytest
 
-from src.domain.vo.events_args import Title, Location, Venue, EventTime, Time
+from src.domain.vo.events_args import Title, Location, Venue, EventTime, Time, \
+    Participants
 
 
 @pytest.mark.parametrize("title", ("test_title", ""))
@@ -17,7 +19,7 @@ def test_create_valid_titles(title: str):
 
 
 @pytest.mark.parametrize("title", (None, 123123, []))
-def test_create_invalid_titles(title: str):
+def test_create_invalid_titles(title: Any):
     """
     test the creation of valid options of titles
     :param title: the title's values
@@ -37,7 +39,7 @@ def test_create_valid_location(location: str):
 
 
 @pytest.mark.parametrize("location", (None, 123123, []))
-def test_create_invalid_locations(location: str):
+def test_create_invalid_locations(location: Any):
     """
     test the creation of valid options of location
     :param location: the location's values
@@ -57,13 +59,33 @@ def test_create_valid_venues(venue: str):
 
 
 @pytest.mark.parametrize("venue", (None, 123123, []))
-def test_create_invalid_venues(venue: str):
+def test_create_invalid_venues(venue: Any):
     """
     test the creation of valid options of titles
     :param venue: the venue's values
     """
     with pytest.raises(ValueError):
         _ = Venue(value=venue)
+
+
+@pytest.mark.parametrize("participants", (100, 10000000, 30000))
+def test_create_valid_participants(participants: int):
+    """
+    test the creation of valid options of participants
+    :param participants: number of participants
+    """
+    instance = Participants(value=participants)
+    assert instance.value == participants
+
+
+@pytest.mark.parametrize("participants", (None, "", [], -100, 100**1000))
+def test_create_invalid_participants(participants: Any):
+    """
+    test the creation of valid options of titles
+    :param participants: number of participants
+    """
+    with pytest.raises(ValueError):
+        _ = Participants(value=participants)
 
 
 def test_create_valid_time():

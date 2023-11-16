@@ -2,7 +2,8 @@ import uuid
 from datetime import datetime, timedelta
 
 from src.domain.entities.event import Event
-from src.domain.vo.events_args import Venue, Location, Title, EventTime
+from src.domain.vo.events_args import Venue, Location, Title, EventTime, \
+    Participants
 
 
 def test_event_creation():
@@ -10,12 +11,15 @@ def test_event_creation():
     title = Title(value="test_title")
     location = Location(value="test_location")
     venue = Venue(value="test_venue")
-    event_instance = Event.create(event_time, title, location, venue)
+    number_of_participants = Participants(value=100)
+    event_instance = Event.create(event_time, title, location, venue,
+                                  number_of_participants)
     assert type(event_instance.event_id) is uuid.UUID
     assert event_instance.event_time == event_time
     assert event_instance.title == title
     assert event_instance.location == location
     assert event_instance.venue == venue
+    assert event_instance.number_of_participants == number_of_participants
     assert event_instance.creation_time.value - datetime.now() == timedelta(
         minutes=0
     )
