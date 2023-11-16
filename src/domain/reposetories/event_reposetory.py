@@ -15,7 +15,7 @@ class AbstractEventsRepo(ABC):
         :param new_event: the new event to add
         :return: None
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def delete(self, event_id: uuid.UUID):
@@ -24,7 +24,7 @@ class AbstractEventsRepo(ABC):
         :param event_id: the event's id to delete
         :return: None
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def get_all(self) -> List[Event]:
@@ -32,7 +32,7 @@ class AbstractEventsRepo(ABC):
         Retrieve all the events from the repo
         :return: the entire events in the repo
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def get_one(self, event_id: uuid.UUID) -> Event:
@@ -41,7 +41,7 @@ class AbstractEventsRepo(ABC):
         :param event_id: the event id to search
         :return: the event with the given ID
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def get_by_location(self, required_location: Location) -> List[Event]:
@@ -50,7 +50,7 @@ class AbstractEventsRepo(ABC):
         given location
         :return: the found events in the repo
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def get_by_venue(self, required_venue: Venue) -> List[Event]:
@@ -59,4 +59,4 @@ class AbstractEventsRepo(ABC):
         given venue
         :return: the found events in the repo
         """
-        ...
+        raise NotImplementedError
