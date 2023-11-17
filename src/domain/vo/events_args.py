@@ -28,7 +28,7 @@ class Title(BaseVO):
     def __post_init__(self):
         if not self.type_validator():
             raise ValueError("Wrong types")
-        self.value = self.value.upper()
+        self.value = self.value.lower()
 
 
 @dataclass
@@ -38,7 +38,7 @@ class Location(BaseVO):
     def __post_init__(self):
         if not self.type_validator():
             raise ValueError("Wrong types")
-        self.value = self.value.upper()
+        self.value = self.value.lower()
 
 
 @dataclass
@@ -48,7 +48,7 @@ class Venue(BaseVO):
     def __post_init__(self):
         if not self.type_validator():
             raise ValueError("Wrong types")
-        self.value = self.value.upper()
+        self.value = self.value.lower()
 
 
 @dataclass

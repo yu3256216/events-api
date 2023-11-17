@@ -21,7 +21,7 @@ def test_create_valid_titles(title: str):
     :param title: the title's values
     """
     instance = Title(value=title)
-    assert instance.value == title.upper()
+    assert instance.value == title.lower()
 
 
 @pytest.mark.parametrize("title", (None, 123123, []))
@@ -41,7 +41,7 @@ def test_create_valid_location(location: str):
     :param location: the location's values
     """
     instance = Location(value=location)
-    assert instance.value == location.upper()
+    assert instance.value == location.lower()
 
 
 @pytest.mark.parametrize("location", (None, 123123, []))
@@ -61,7 +61,7 @@ def test_create_valid_venues(venue: str):
     :param venue: the venue's values
     """
     instance = Venue(value=venue)
-    assert instance.value == venue.upper()
+    assert instance.value == venue.lower()
 
 
 @pytest.mark.parametrize("venue", (None, 123123, []))
