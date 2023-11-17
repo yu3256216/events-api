@@ -2,11 +2,11 @@ import uuid
 from typing import List
 
 from src.domain.entities.event import Event
-from src.domain.reposetories.event_reposetory import AbstractEventsRepo
+from src.domain.reposetories.event_reposetory import EventsRepo
 from src.domain.vo.events_args import Venue, Location
 
 
-class EventsRepositoryImpl(AbstractEventsRepo):
+class EventsRepositoryImpl(EventsRepo):
     def __init__(self):
         self.events = []
 

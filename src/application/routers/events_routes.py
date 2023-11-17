@@ -11,7 +11,7 @@ from src.application.schemas.events_schemas import (
     ReturnableEvent, SortKey,
 )
 from src.domain.entities.event import Event
-from src.domain.reposetories.event_reposetory import AbstractEventsRepo
+from src.domain.reposetories.event_reposetory import EventsRepo
 from src.domain.vo.events_args import (
     EventTime,
     Title,
@@ -111,7 +111,7 @@ def schedule_new_event(
 @router.get("/{event_id}")
 def get_event_by_id(
         event_id: uuid.UUID,
-        repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        repository: Annotated[EventsRepo, Depends(get_repo)],
 ):
     """
     Get the event details by its ID
@@ -131,7 +131,7 @@ def get_event_by_id(
 @router.get("/location/{location}")
 def get_events_by_location(
         location: str,
-        repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        repository: Annotated[EventsRepo, Depends(get_repo)],
         sort_key: SortKey | None = None
 
 ):
@@ -152,7 +152,7 @@ def get_events_by_location(
 @router.get("/venue/{venue}")
 def get_events_by_venue(
         venue: str,
-        repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        repository: Annotated[EventsRepo, Depends(get_repo)],
         sort_key: SortKey | None = None
 ):
     """
@@ -173,7 +173,7 @@ def get_events_by_venue(
 def update_event(
         event_id: uuid.UUID,
         item: UpdateEventData,
-        repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        repository: Annotated[EventsRepo, Depends(get_repo)],
 ):
     """
     Update the event with the given ID
@@ -209,7 +209,7 @@ def update_event(
 @router.delete("/{event_id}")
 def delete_event(
         event_id: uuid.UUID,
-        repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        repository: Annotated[EventsRepo, Depends(get_repo)],
 ):
     """
     Delete the event with the given ID

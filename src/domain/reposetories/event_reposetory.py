@@ -6,7 +6,7 @@ from src.domain.entities.event import Event
 from src.domain.vo.events_args import Location, Venue
 
 
-class AbstractEventsRepo(ABC):
+class EventsRepo(ABC):
     @abstractmethod
     def add(self, new_event: Event):
         """

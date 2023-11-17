@@ -4,12 +4,12 @@ from typing import List, Dict
 
 from src.application.utils.sqlite_handler import SQLiteHandler
 from src.domain.entities.event import Event
-from src.domain.reposetories.event_reposetory import AbstractEventsRepo
+from src.domain.reposetories.event_reposetory import EventsRepo
 from src.domain.vo.events_args import Venue, Location, Title, \
     Participants, Time
 
 
-class EventsRepositorySQLImpl(AbstractEventsRepo):
+class EventsRepositorySQLImpl(EventsRepo):
     def __init__(self):
         self.db_name = "events.db"
         self.table_name = "events"
