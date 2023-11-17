@@ -3,6 +3,60 @@ from typing import Any, Dict
 
 
 class SQLiteHandler:
+
+    @staticmethod
+    def create_table(
+            db_name: str,
+            table_name: str
+    ):
+        """
+        Create the table for the events project
+        :param db_name: the db where the tables at
+        :param table_name: the tables name
+        :return:
+        """
+        conn = sqlite3.connect(db_name)
+        curs = conn.cursor()
+        curs.execute(
+                    f"""
+                                CREATE TABLE "{table_name}" (
+            event_id               TEXT    PRIMARY KEY
+                                           NOT NULL,
+            event_time             TEXT    NOT NULL,
+            title                  TEXT    NOT NULL,
+            location               TEXT    NOT NULL,
+            venue                  TEXT    NOT NULL,
+            number_of_participants INTEGER NOT NULL,
+            creation_time          TEXT    NOT NULL,
+            modify_time            TEXT    NOT NULL
+        );
+        ;"""
+        )
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def check_if_table_exists(
+            db_name: str,
+            table_name: str,
+    ):
+        """
+        Check if the table is in the db
+        :param db_name: the db where the tables at
+        :param table_name: the tables name
+        :return:
+        """
+        conn = sqlite3.connect(db_name)
+        curs = conn.cursor()
+        curs.execute(
+            f"""
+                    SELECT name FROM sqlite_master 
+                WHERE type='table' and name = '{table_name}';"""
+        )
+        res = curs.fetchall()
+        conn.close()
+        return res != []
+
     @staticmethod
     def read_all_table(db_name: str, table_name: str):
         """

@@ -14,6 +14,13 @@ class EventsRepositorySQLImpl(EventsRepo):
         self.db_name = "events.db"
         self.table_name = "events"
         self.observers = []
+        self.setup()
+
+    def setup(self):
+        if not SQLiteHandler.check_if_table_exists(self.db_name,
+                                                   self.table_name):
+            SQLiteHandler.check_if_table_exists(self.db_name,
+                                                self.table_name)
 
     def add_observer(self, observer: Observer):
         if observer not in self.observers:
