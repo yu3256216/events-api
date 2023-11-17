@@ -1,6 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 @dataclass
@@ -25,15 +25,30 @@ class BaseVO(ABC):
 class Title(BaseVO):
     value: str
 
+    def __post_init__(self):
+        if not self.type_validator():
+            raise ValueError("Wrong types")
+        self.value = self.value.upper()
+
 
 @dataclass
 class Location(BaseVO):
     value: str
 
+    def __post_init__(self):
+        if not self.type_validator():
+            raise ValueError("Wrong types")
+        self.value = self.value.upper()
+
 
 @dataclass
 class Venue(BaseVO):
     value: str
+
+    def __post_init__(self):
+        if not self.type_validator():
+            raise ValueError("Wrong types")
+        self.value = self.value.upper()
 
 
 @dataclass
@@ -65,6 +80,6 @@ class EventTime(Time):
         validate that the event date is in the future
         :return: None (void function)
         """
-        if self.value < datetime.now():
+        if self.value < datetime.now().replace(tzinfo=timezone.utc):
             # TODO new exception
             raise ValueError

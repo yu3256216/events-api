@@ -15,7 +15,7 @@ class Event:
     def __init__(
         self,
         event_id: uuid,
-        event_time: EventTime,
+        event_time: Time,
         title: Title,
         location: Location,
         venue: Venue,

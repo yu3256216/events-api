@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -20,16 +20,18 @@ class TestEvent:
         return event_generator()
 
     def test_event_creation(self):
-        event_time = EventTime(value=datetime.now() + timedelta(days=100))
+        event_time = datetime.now().replace(
+            tzinfo=timezone.utc) + timedelta(days=100)
+        event_time_obj = EventTime(value=event_time)
         title = Title(value="test_title")
         location = Location(value="test_location")
         venue = Venue(value="test_venue")
         number_of_participants = Participants(value=100)
         event_instance = Event.create(
-            event_time, title, location, venue, number_of_participants
+            event_time_obj, title, location, venue, number_of_participants
         )
         assert type(event_instance.event_id) is uuid.UUID
-        assert event_instance.event_time == event_time
+        assert event_instance.event_time == event_time_obj
         assert event_instance.title == title
         assert event_instance.location == location
         assert event_instance.venue == venue
@@ -46,10 +48,12 @@ class TestEvent:
         modify time
         :return:
         """
-        new_time = EventTime(value=datetime.now() + timedelta(days=150))
-        event.update_time(new_time)
+        new_time = datetime.now().replace(
+            tzinfo=timezone.utc) + timedelta(days=150)
+        new_time_obj = EventTime(value=new_time)
+        event.update_time(new_time_obj)
         assert (
-            event.event_time == new_time
+            event.event_time == new_time_obj
             and event.modify_time.value - datetime.now()
             == timedelta(minutes=0)
         )

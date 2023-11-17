@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 from typing import Any
 
@@ -21,7 +21,7 @@ def test_create_valid_titles(title: str):
     :param title: the title's values
     """
     instance = Title(value=title)
-    assert instance.value == title
+    assert instance.value == title.upper()
 
 
 @pytest.mark.parametrize("title", (None, 123123, []))
@@ -41,7 +41,7 @@ def test_create_valid_location(location: str):
     :param location: the location's values
     """
     instance = Location(value=location)
-    assert instance.value == location
+    assert instance.value == location.upper()
 
 
 @pytest.mark.parametrize("location", (None, 123123, []))
@@ -61,7 +61,7 @@ def test_create_valid_venues(venue: str):
     :param venue: the venue's values
     """
     instance = Venue(value=venue)
-    assert instance.value == venue
+    assert instance.value == venue.upper()
 
 
 @pytest.mark.parametrize("venue", (None, 123123, []))
@@ -116,7 +116,8 @@ def test_create_valid_event_time():
     """
     test the creation of valid options of event times
     """
-    time_value = datetime.now() + timedelta(minutes=10)
+    time_value = datetime.now().replace(
+            tzinfo=timezone.utc) + timedelta(minutes=10)
     instance = EventTime(value=time_value)
     assert instance.value == time_value
 
@@ -125,6 +126,7 @@ def test_create_invalid_event_time():
     """
     test the creation of invalid options of event times
     """
-    time_value = datetime.now() - timedelta(minutes=10)
+    time_value = datetime.now().replace(
+            tzinfo=timezone.utc) - timedelta(minutes=10)
     with pytest.raises(ValueError):
         _ = EventTime(value=time_value)
