@@ -1,6 +1,9 @@
+import uuid
 from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from enum import Enum
+from typing import Dict, Optional
 
 
 @dataclass
@@ -83,3 +86,15 @@ class EventTime(Time):
         if self.value < datetime.now().replace(tzinfo=timezone.utc):
             # TODO new exception
             raise ValueError
+
+
+class RepoMethod(Enum):
+    CREATE = "create"
+    UPDATE = "update"
+    DELETE = "delete"
+
+
+@dataclass
+class RepoActionDetails:
+    event_id: uuid.UUID
+    event: Optional[Dict] = None

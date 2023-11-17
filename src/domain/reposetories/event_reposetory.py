@@ -1,12 +1,63 @@
 import uuid
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Dict
 
 from src.domain.entities.event import Event
-from src.domain.vo.events_args import Location, Venue
+from src.domain.vo.events_args import Location, Venue, RepoMethod, \
+    RepoActionDetails
+
+
+class Observer(ABC):
+
+    @abstractmethod
+    def get_repo_state(self, repo: list[Dict]):
+        """
+        Gets the current state of the repo
+        :param repo: the full repo
+        :return: None
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def update(self, method: RepoMethod, details: RepoActionDetails):
+        """
+        Gets the current state of the repo
+        :param method: the method that occurred
+        :param details: the method details
+        :return: None
+        """
+        raise NotImplementedError
 
 
 class EventsRepo(ABC):
+    @abstractmethod
+    def add_observer(self, observer: Observer):
+        """
+        Add observer
+        :param observer: the observer to add
+        :return:
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def remove_observer(self, observer: Observer):
+        """
+        remove observer of the repo
+        :param observer: the observer to remove
+        :return:
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def notify_observers(self, method: RepoMethod, details: RepoActionDetails):
+        """
+        Notify Observers of the change
+        :param method: the method that occurred
+        :param details: the method details
+        :return: None
+        """
+        raise NotImplementedError
+
     @abstractmethod
     def add(self, new_event: Event):
         """
