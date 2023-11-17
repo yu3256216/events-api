@@ -37,7 +37,7 @@ class EventsRepositorySQLImpl(EventsRepo):
         )
 
     def add(self, new_event: Event):
-        item_to_insert = self.parse_event_to_db(new_event)
+        item_to_insert = new_event.as_dict()
         SQLiteHandler.insert(self.db_name, self.table_name, item_to_insert)
 
     def delete(self, event_id: uuid.UUID):
@@ -68,7 +68,7 @@ class EventsRepositorySQLImpl(EventsRepo):
         return [self.from_row_to_event(row) for row in res]
 
     def update(self, event_id: uuid.UUID, new_event: Event):
-        item_to_insert = self.parse_event_to_db(new_event)
+        item_to_insert = new_event.as_dict()
         SQLiteHandler.update(
             self.db_name,
             self.table_name,
@@ -76,27 +76,3 @@ class EventsRepositorySQLImpl(EventsRepo):
             str(event_id),
             item_to_insert,
         )
-
-    @staticmethod
-    def parse_event_to_db(event: Event) -> Dict[str, str | int]:
-        """
-        Parse the event object to a dict that will be inserted to the DB
-        :param event: the event object
-        :return: the dict to insert to the DB {column_name: column_value}
-        """
-        return {
-            "event_id": str(event.event_id),
-            "event_time": event.event_time.value.strftime(
-                "%m/%d/%Y, %H:%M:%S"
-            ),
-            "title": event.title.value,
-            "number_of_participants": event.number_of_participants.value,
-            "location": event.location.value,
-            "venue": event.venue.value,
-            "creation_time": event.creation_time.value.strftime(
-                "%m/%d/%Y, %H:%M:%S"
-            ),
-            "modify_time": event.modify_time.value.strftime(
-                "%m/%d/%Y, %H:%M:%S"
-            ),
-        }

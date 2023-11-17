@@ -78,6 +78,27 @@ class Event:
         self.venue = new_venue
         self.modify_time = Time(value=datetime.now())
 
+    def as_dict(self):
+        """
+        :return: The Objects values in a dict
+        """
+        return {
+            "event_id": str(self.event_id),
+            "event_time": self.event_time.value.strftime(
+                "%m/%d/%Y, %H:%M:%S"
+            ),
+            "title": self.title.value,
+            "number_of_participants": self.number_of_participants.value,
+            "location": self.location.value,
+            "venue": self.venue.value,
+            "creation_time": self.creation_time.value.strftime(
+                "%m/%d/%Y, %H:%M:%S"
+            ),
+            "modify_time": self.modify_time.value.strftime(
+                "%m/%d/%Y, %H:%M:%S"
+            ),
+        }
+
     @classmethod
     def create(
         cls,
