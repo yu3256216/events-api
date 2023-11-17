@@ -5,7 +5,8 @@ from typing import Dict
 import pytest
 from fastapi.testclient import TestClient
 
-from src.application.routers.events_routes import router
+from src.application.routers.events_routes import router, sort_events
+from src.application.schemas.events_schemas import SortKey
 from src.domain.entities.event import Event
 from tests.adapters.generator import event_generator
 from tests.adapters.repository_implementation import EventsRepositoryImpl
@@ -37,6 +38,31 @@ class TestEventsRoutes:
     @pytest.fixture
     def client(self):
         return TestClient(router)
+
+    @pytest.mark.parametrize("key", (SortKey.DATE,
+                                     SortKey.NUMBER_OF_PARTICIPANTS,
+                                     SortKey.CREATION_TIME))
+    def test_sort_events(self, key: SortKey):
+        """
+        Sort the events by the given key
+        :param key: the sort key
+        :param events: the list of events to sort
+        :return:
+        """
+        events = [event_generator() for _ in range(5)]
+        events_copy = events.copy()
+        sort_events(key, events)
+        match key:
+            case SortKey.DATE:
+                events_copy.sort(key=lambda x: x.event_time.value,
+                                 reverse=True)
+            case SortKey.NUMBER_OF_PARTICIPANTS:
+                events_copy.sort(key=lambda x: x.number_of_participants.value,
+                                 reverse=True)
+            case SortKey.CREATION_TIME:
+                events_copy.sort(key=lambda x: x.creation_time.value,
+                                 reverse=True)
+        assert events_copy == events
 
     def test_get_all_events(self, client, mocker):
         mocker.patch(
@@ -162,16 +188,16 @@ class TestEventsRoutes:
         new_nop = event.number_of_participants.value + 1
         response = client.put(f"/events/{str(event.event_id)}",
                               json={
-                                   "new_event_title": "changed",
-                                   "new_event_location": "changed",
-                                   "new_event_venue": "changed",
-                                   "new_number_of_participants": new_nop,
-                                   "new_event_time": "2600-12-10T10:51:36.347Z"
-                               })
+                                  "new_event_title": "changed",
+                                  "new_event_location": "changed",
+                                  "new_event_venue": "changed",
+                                  "new_number_of_participants": new_nop,
+                                  "new_event_time": "2600-12-10T10:51:36.347Z"
+                              })
         updated_event = self.test_repo.get_one(event.event_id)
-        assert response.status_code == 200 and\
+        assert response.status_code == 200 and \
                updated_event.event_time.value == \
-               datetime.fromisoformat("2600-12-10T10:51:36.347").\
+               datetime.fromisoformat("2600-12-10T10:51:36.347"). \
                    replace(tzinfo=timezone.utc) \
                and updated_event.title.value == "changed" \
                and updated_event.location.value == "changed" \
@@ -221,5 +247,3 @@ class TestEventsRoutes:
     #                                "event_time": "2023-12-10T10:51:36.347Z"
     #                            })
     #     assert response.status_code == 200
-
-

@@ -8,7 +8,7 @@ from src.application.events_sql_repo import EventsRepositorySQLImpl
 from src.application.schemas.events_schemas import (
     ScheduleEvent,
     UpdateEventData,
-    ReturnableEvent,
+    ReturnableEvent, SortKey,
 )
 from src.domain.entities.event import Event
 from src.domain.reposetories.event_reposetory import AbstractEventsRepo
@@ -32,6 +32,23 @@ def get_repo():
     return repo
 
 
+def sort_events(sort_key: SortKey, events: list[Event]):
+    """
+    Sort the events by the given key
+    :param sort_key: the sort key
+    :param events: the list of events to sort
+    :return:
+    """
+    match sort_key:
+        case SortKey.DATE:
+            events.sort(key=lambda x: x.event_time.value, reverse=True)
+        case SortKey.NUMBER_OF_PARTICIPANTS:
+            events.sort(key=lambda x: x.number_of_participants.value,
+                        reverse=True)
+        case SortKey.CREATION_TIME:
+            events.sort(key=lambda x: x.creation_time.value, reverse=True)
+
+
 def parse_event_to_client(event: Event) -> ReturnableEvent:
     """
     Gets an event and make it returnable
@@ -51,16 +68,19 @@ def parse_event_to_client(event: Event) -> ReturnableEvent:
 
 
 @router.get("/")
-def get_all_events(
-        repository: Annotated[EventsRepositorySQLImpl, Depends(get_repo)]
-):
+def get_all_events(repository: Annotated[
+    EventsRepositorySQLImpl, Depends(get_repo)],
+                   sort_key: SortKey | None = None
+                   ):
     """
     Return a list of all the events
     :param repository: The place where the objects are saved in
+    :param sort_key: the key to sort the result from
     :return: list of all the events
     """
-    # return [parse_event_to_client(event) for event in repository.get_all()]
     events = repository.get_all()
+    if sort_key:
+        sort_events(sort_key, events)
     return JSONResponse(
         {"message": [dict(parse_event_to_client(event)) for event in events]})
 
@@ -112,14 +132,19 @@ def get_event_by_id(
 def get_events_by_location(
         location: str,
         repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        sort_key: SortKey | None = None
+
 ):
     """
     Retrieve the events that are in the given location
     :param location: the location to search
     :param repository: The place where the objects are saved in
+    :param sort_key: the key to sort the result from
     :return: the events details
     """
     events = repository.get_by_location(Location(value=location))
+    if sort_key:
+        sort_events(sort_key, events)
     return JSONResponse(
         {"message": [dict(parse_event_to_client(event)) for event in events]})
 
@@ -128,14 +153,18 @@ def get_events_by_location(
 def get_events_by_venue(
         venue: str,
         repository: Annotated[AbstractEventsRepo, Depends(get_repo)],
+        sort_key: SortKey | None = None
 ):
     """
     Retrieve the events that are in the given venue
     :param venue: the venue to search
     :param repository: The place where the objects are saved in
+    :param sort_key: the key to sort the result from
     :return: the events details
     """
     events = repository.get_by_venue(Venue(value=venue))
+    if sort_key:
+        sort_events(sort_key, events)
     return JSONResponse(
         {"message": [dict(parse_event_to_client(event)) for event in events]})
 

@@ -1,6 +1,9 @@
+from dataclasses import Field
+from enum import Enum
 from uuid import UUID
 
-from pydantic import BaseModel, PositiveInt, Extra, FutureDatetime
+from pydantic import BaseModel, PositiveInt, Extra, FutureDatetime, validator, \
+    field_validator, ValidationError
 
 
 class ReturnableEvent(BaseModel):
@@ -13,6 +16,12 @@ class ReturnableEvent(BaseModel):
 
     class Config:
         extra = Extra.forbid
+
+
+class SortKey(Enum):
+    DATE = "date"
+    NUMBER_OF_PARTICIPANTS = "number_of_participants"
+    CREATION_TIME = "creation_time"
 
 
 class ScheduleEvent(BaseModel):
