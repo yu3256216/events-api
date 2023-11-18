@@ -1,9 +1,9 @@
 import uuid
 from typing import List
 
-from src.domain.entities.event import Event
-from src.domain.reposetories.event_reposetory import EventsRepo, Observer
-from src.domain.vo.events_args import Venue, Location, RepoMethod, \
+from src.domain.event.event import Event
+from src.domain.event.event_reposetory import EventsRepo, Observer
+from src.domain.event.events_args import Venue, Location, RepoMethod, \
     RepoActionDetails
 
 

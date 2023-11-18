@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime, timezone
 
-from src.domain.entities.event import Event
-from src.domain.vo.events_args import (
+from src.domain.event.event import Event
+from src.domain.event.events_args import (
     EventTime,
     Title,
     Location,

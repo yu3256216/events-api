@@ -1,10 +1,10 @@
 import logging
 import time
-from datetime import timedelta, datetime, timezone
+from datetime import timedelta, datetime
 from typing import Dict
 
 from src.domain.services.reminder import ReminderService
-from src.domain.vo.events_args import RepoMethod, RepoActionDetails
+from src.domain.event.events_args import RepoMethod, RepoActionDetails
 
 
 class ReminderServiceImpl(ReminderService):

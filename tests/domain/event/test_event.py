@@ -3,8 +3,8 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from src.domain.entities.event import Event
-from src.domain.vo.events_args import (
+from src.domain.event.event import Event
+from src.domain.event.events_args import (
     Venue,
     Location,
     Title,

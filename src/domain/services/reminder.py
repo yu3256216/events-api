@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.domain.reposetories.event_reposetory import Observer
+from src.domain.event.event_reposetory import Observer
 
 
 class ReminderService(Observer, ABC):

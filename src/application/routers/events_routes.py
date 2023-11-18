@@ -12,9 +12,9 @@ from src.application.schemas.events_schemas import (
     ReturnableEvent, SortKey,
 )
 from src.application.services.reminder_service import ReminderServiceImpl
-from src.domain.entities.event import Event
-from src.domain.reposetories.event_reposetory import EventsRepo
-from src.domain.vo.events_args import (
+from src.domain.event.event import Event
+from src.domain.event.event_reposetory import EventsRepo
+from src.domain.event.events_args import (
     EventTime,
     Title,
     Location,

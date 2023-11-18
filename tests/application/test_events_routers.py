@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from src.application.routers.events_routes import router, sort_events
 from src.application.schemas.events_schemas import SortKey
-from src.domain.entities.event import Event
+from src.domain.event.event import Event
 from tests.adapters.generator import event_generator
 from tests.adapters.repository_implementation import EventsRepositoryImpl
 

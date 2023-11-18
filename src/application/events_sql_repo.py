@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import List
 
 from src.application.utils.sqlite_handler import SQLiteHandler
-from src.domain.entities.event import Event
-from src.domain.reposetories.event_reposetory import EventsRepo, Observer
-from src.domain.vo.events_args import Venue, Location, Title, \
+from src.domain.event.event import Event
+from src.domain.event.event_reposetory import EventsRepo, Observer
+from src.domain.event.events_args import Venue, Location, Title, \
     Participants, Time, RepoMethod, RepoActionDetails
 
 

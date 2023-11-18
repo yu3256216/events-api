@@ -2,8 +2,8 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import List, Dict
 
-from src.domain.entities.event import Event
-from src.domain.vo.events_args import Location, Venue, RepoMethod, \
+from src.domain.event.event import Event
+from src.domain.event.events_args import Location, Venue, RepoMethod, \
     RepoActionDetails
 
 

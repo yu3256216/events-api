@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from src.domain.vo.events_args import (
+from src.domain.event.events_args import (
     EventTime,
     Venue,
     Location,

@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 
-from src.domain.vo.events_args import (
+from src.domain.event.events_args import (
     Title,
     Location,
     Venue,
