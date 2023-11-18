@@ -52,7 +52,8 @@ class ReminderServiceImpl(ReminderService):
                 for event in self.events_repo:
                     event_time = datetime.strptime(
                         event["event_time"], "%m/%d/%Y, %H:%M:%S")
-                    if event_time - timedelta(minutes=30) < datetime.utcnow()\
+                    if event_time - timedelta(
+                            minutes=30) < datetime.utcnow() < event_time \
                             and not event.get("checked", False):
                         print("its time")
                         logging.debug(
