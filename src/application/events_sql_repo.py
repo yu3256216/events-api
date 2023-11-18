@@ -11,7 +11,7 @@ from src.domain.vo.events_args import Venue, Location, Title, \
 
 class EventsRepositorySQLImpl(EventsRepo):
     def __init__(self):
-        self.db_name = "events.db"
+        self.db_name = "new_events1.db"
         self.table_name = "events"
         self.observers = []
         self.setup()
@@ -19,8 +19,8 @@ class EventsRepositorySQLImpl(EventsRepo):
     def setup(self):
         if not SQLiteHandler.check_if_table_exists(self.db_name,
                                                    self.table_name):
-            SQLiteHandler.check_if_table_exists(self.db_name,
-                                                self.table_name)
+            SQLiteHandler.create_table(self.db_name,
+                                       self.table_name)
 
     def add_observer(self, observer: Observer):
         if observer not in self.observers:

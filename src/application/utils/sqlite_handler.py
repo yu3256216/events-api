@@ -17,18 +17,18 @@ class SQLiteHandler:
         """
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
-        curs.execute(
+        curs.executescript(
                     f"""
-                                CREATE TABLE "{table_name}" (
-            event_id               TEXT    PRIMARY KEY
-                                           NOT NULL,
-            event_time             TEXT    NOT NULL,
-            title                  TEXT    NOT NULL,
-            location               TEXT    NOT NULL,
-            venue                  TEXT    NOT NULL,
-            number_of_participants INTEGER NOT NULL,
-            creation_time          TEXT    NOT NULL,
-            modify_time            TEXT    NOT NULL
+                    CREATE TABLE "{table_name}" (
+                    event_id               TEXT    PRIMARY KEY
+                    NOT NULL,
+                    event_time             TEXT    NOT NULL,
+                    title                  TEXT    NOT NULL,
+                    location               TEXT    NOT NULL,
+                    venue                  TEXT    NOT NULL,
+                    number_of_participants INTEGER NOT NULL,
+                    creation_time          TEXT    NOT NULL,
+                    modify_time            TEXT    NOT NULL
         );
         ;"""
         )
