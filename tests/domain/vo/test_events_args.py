@@ -116,7 +116,7 @@ def test_create_valid_event_time():
     """
     test the creation of valid options of event times
     """
-    time_value = datetime.now().replace(
+    time_value = datetime.utcnow().replace(
             tzinfo=timezone.utc) + timedelta(minutes=10)
     instance = EventTime(value=time_value)
     assert instance.value == time_value
@@ -126,7 +126,7 @@ def test_create_invalid_event_time():
     """
     test the creation of invalid options of event times
     """
-    time_value = datetime.now().replace(
+    time_value = datetime.utcnow().replace(
             tzinfo=timezone.utc) - timedelta(minutes=10)
     with pytest.raises(ValueError):
         _ = EventTime(value=time_value)
