@@ -17,14 +17,25 @@ class ReminderServiceImpl(ReminderService):
     def update(self, method: RepoMethod, details: RepoActionDetails):
         match method:
             case RepoMethod.CREATE:
-                self.events_repo.append(details.event)
+                event_to_add = details.event
+                event_to_add["checked"] = False
+                self.events_repo.append(event_to_add)
             case RepoMethod.DELETE:
                 self.events_repo = [e for e in self.events_repo if
                                     e["event_id"] != details.event_id]
             case RepoMethod.UPDATE:
-                self.events_repo = [e for e in self.events_repo if
-                                    e["event_id"] != details.event_id]
-                self.events_repo.append(details.event)
+                repo_copy_wo_obj = []
+                for e in self.events_repo:
+                    if e["event_id"] != details.event_id:
+                        repo_copy_wo_obj.append(e)
+                    else:
+                        if details.event["event_time"] != e["event_time"]:
+                            to_check = True
+                        else:
+                            to_check = not e.get("checked", False)
+                event_to_add = details.event
+                event_to_add["checked"] = not to_check
+                self.events_repo.append(event_to_add)
 
     def reminder(self, time_before: int):
         """
@@ -41,10 +52,12 @@ class ReminderServiceImpl(ReminderService):
                 for event in self.events_repo:
                     event_time = datetime.strptime(
                         event["event_time"], "%m/%d/%Y, %H:%M:%S")
-                    if event_time - timedelta(minutes=30) == datetime.utcnow():
+                    if event_time - timedelta(minutes=30) < datetime.utcnow()\
+                            and not event.get("checked", False):
                         print("its time")
                         logging.debug(
-                            f"The event {event.title.value}"
+                            f"The event {event['title']}"
                             f" will start in 30min")
+                        event['checked'] = True
             else:
                 time.sleep(1)
