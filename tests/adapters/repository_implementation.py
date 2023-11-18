@@ -3,8 +3,12 @@ from typing import List
 
 from src.domain.event.event import Event
 from src.domain.event.event_reposetory import EventsRepo, Observer
-from src.domain.event.events_args import Venue, Location, RepoMethod, \
-    RepoActionDetails
+from src.domain.event.events_args import (
+    Venue,
+    Location,
+    RepoMethod,
+    RepoActionDetails,
+)
 from src.domain.event.events_exceptions import EventDoesntExists
 
 
@@ -29,16 +33,21 @@ class EventsRepositoryImpl(EventsRepo):
 
     def add(self, new_event: Event):
         self.events.append(new_event)
-        self.notify_observers(RepoMethod.CREATE,
-                              RepoActionDetails(event_id=new_event.event_id,
-                                                event=new_event.as_dict()))
+        self.notify_observers(
+            RepoMethod.CREATE,
+            RepoActionDetails(
+                event_id=new_event.event_id, event=new_event.as_dict()
+            ),
+        )
 
     def delete(self, event_id: uuid.UUID):
         _ = self.get_one(event_id)
-        self.events = [event for event in self.events if
-                       event.event_id != event_id]
-        self.notify_observers(RepoMethod.DELETE,
-                              RepoActionDetails(event_id=event_id))
+        self.events = [
+            event for event in self.events if event.event_id != event_id
+        ]
+        self.notify_observers(
+            RepoMethod.DELETE, RepoActionDetails(event_id=event_id)
+        )
 
     def get_all(self) -> List[Event]:
         return self.events
@@ -63,13 +72,16 @@ class EventsRepositoryImpl(EventsRepo):
 
     def update(self, event_id: uuid.UUID, new_event: Event):
         og_len = len(self.events)
-        self.events = [event for event in self.events if
-                       event.event_id != event_id]
+        self.events = [
+            event for event in self.events if event.event_id != event_id
+        ]
         if og_len != len(self.events):
             self.events.append(new_event)
-            self.notify_observers(RepoMethod.UPDATE,
-                                  RepoActionDetails(
-                                      event_id=new_event.event_id,
-                                      event=new_event.as_dict()))
+            self.notify_observers(
+                RepoMethod.UPDATE,
+                RepoActionDetails(
+                    event_id=new_event.event_id, event=new_event.as_dict()
+                ),
+            )
             return True
         raise EventDoesntExists

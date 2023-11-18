@@ -3,12 +3,15 @@ from abc import ABC, abstractmethod
 from typing import List, Dict
 
 from src.domain.event.event import Event
-from src.domain.event.events_args import Location, Venue, RepoMethod, \
-    RepoActionDetails
+from src.domain.event.events_args import (
+    Location,
+    Venue,
+    RepoMethod,
+    RepoActionDetails,
+)
 
 
 class Observer(ABC):
-
     @abstractmethod
     def get_repo_state(self, repo: list[Dict]):
         """

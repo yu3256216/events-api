@@ -20,8 +20,9 @@ class TestEvent:
         return event_generator()
 
     def test_event_creation(self):
-        event_time = datetime.now().replace(
-            tzinfo=timezone.utc) + timedelta(days=100)
+        event_time = datetime.now().replace(tzinfo=timezone.utc) + timedelta(
+            days=100
+        )
         event_time_obj = EventTime(value=event_time)
         title = Title(value="test_title")
         location = Location(value="test_location")
@@ -48,8 +49,9 @@ class TestEvent:
         modify time
         :return:
         """
-        new_time = datetime.now().replace(
-            tzinfo=timezone.utc) + timedelta(days=150)
+        new_time = datetime.now().replace(tzinfo=timezone.utc) + timedelta(
+            days=150
+        )
         new_time_obj = EventTime(value=new_time)
         event.update_time(new_time_obj)
         assert (

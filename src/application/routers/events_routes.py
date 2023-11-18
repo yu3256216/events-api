@@ -9,7 +9,8 @@ from src.application.events_sql_repo import EventsRepositorySQLImpl
 from src.application.schemas.events_schemas import (
     ScheduleEvent,
     UpdateEventData,
-    ReturnableEvent, SortKey,
+    ReturnableEvent,
+    SortKey,
 )
 from src.application.services.reminder_service import ReminderServiceImpl
 from src.domain.event.event import Event
@@ -21,8 +22,10 @@ from src.domain.event.events_args import (
     Venue,
     Participants,
 )
-from src.domain.event.events_exceptions import EventDoesntExists, \
-    InvalidEventTime
+from src.domain.event.events_exceptions import (
+    EventDoesntExists,
+    InvalidEventTime,
+)
 
 router = APIRouter(
     prefix="/events",
@@ -53,8 +56,9 @@ def sort_events(sort_key: SortKey, events: list[Event]):
         case SortKey.DATE:
             events.sort(key=lambda x: x.event_time.value, reverse=True)
         case SortKey.NUMBER_OF_PARTICIPANTS:
-            events.sort(key=lambda x: x.number_of_participants.value,
-                        reverse=True)
+            events.sort(
+                key=lambda x: x.number_of_participants.value, reverse=True
+            )
         case SortKey.CREATION_TIME:
             events.sort(key=lambda x: x.creation_time.value, reverse=True)
 
@@ -71,17 +75,15 @@ def parse_event_to_client(event: Event) -> ReturnableEvent:
         event_location=event.location.value,
         event_venue=event.venue.value,
         number_of_participants=event.number_of_participants.value,
-        event_time=event.event_time.value.strftime(
-            "%m/%d/%Y, %H:%M:%S"
-        ),
+        event_time=event.event_time.value.strftime("%m/%d/%Y, %H:%M:%S"),
     )
 
 
 @router.get("/")
-def get_all_events(repository: Annotated[
-    EventsRepositorySQLImpl, Depends(get_repo)],
-                   sort_key: SortKey | None = None
-                   ):
+def get_all_events(
+    repository: Annotated[EventsRepositorySQLImpl, Depends(get_repo)],
+    sort_key: SortKey | None = None,
+):
     """
     Return a list of all the events
     :param repository: The place where the objects are saved in
@@ -92,13 +94,14 @@ def get_all_events(repository: Annotated[
     if sort_key:
         sort_events(sort_key, events)
     return JSONResponse(
-        {"message": [dict(parse_event_to_client(event)) for event in events]})
+        {"message": [dict(parse_event_to_client(event)) for event in events]}
+    )
 
 
 @router.post("/")
 def schedule_new_event(
-        item: ScheduleEvent,
-        repository: Annotated[EventsRepositorySQLImpl, Depends(get_repo)],
+    item: ScheduleEvent,
+    repository: Annotated[EventsRepositorySQLImpl, Depends(get_repo)],
 ):
     """
     Schedule new event
@@ -110,8 +113,8 @@ def schedule_new_event(
         event_date = EventTime(value=item.event_time)
     except InvalidEventTime:
         return JSONResponse(
-            content={
-                "message": f"Time should be a future time"})
+            content={"message": "Time should be a future time"}
+        )
     new_event = Event.create(
         event_time=event_date,
         title=Title(value=item.event_title),
@@ -121,13 +124,14 @@ def schedule_new_event(
     )
     repository.add(new_event)
     return JSONResponse(
-        content={"message": f"Event created with the ID {new_event.event_id}"})
+        content={"message": f"Event created with the ID {new_event.event_id}"}
+    )
 
 
 @router.get("/{event_id}")
 def get_event_by_id(
-        event_id: uuid.UUID,
-        repository: Annotated[EventsRepo, Depends(get_repo)],
+    event_id: uuid.UUID,
+    repository: Annotated[EventsRepo, Depends(get_repo)],
 ):
     """
     Get the event details by its ID
@@ -139,18 +143,16 @@ def get_event_by_id(
         event = repository.get_one(event_id)
     except EventDoesntExists:
         return JSONResponse(
-            {"message": f"Event {event_id} was not found"},
-            status_code=404)
-    return JSONResponse(
-        {"message": dict(parse_event_to_client(event))})
+            {"message": f"Event {event_id} was not found"}, status_code=404
+        )
+    return JSONResponse({"message": dict(parse_event_to_client(event))})
 
 
 @router.get("/location/{location}")
 def get_events_by_location(
-        location: str,
-        repository: Annotated[EventsRepo, Depends(get_repo)],
-        sort_key: SortKey | None = None
-
+    location: str,
+    repository: Annotated[EventsRepo, Depends(get_repo)],
+    sort_key: SortKey | None = None,
 ):
     """
     Retrieve the events that are in the given location
@@ -163,14 +165,15 @@ def get_events_by_location(
     if sort_key:
         sort_events(sort_key, events)
     return JSONResponse(
-        {"message": [dict(parse_event_to_client(event)) for event in events]})
+        {"message": [dict(parse_event_to_client(event)) for event in events]}
+    )
 
 
 @router.get("/venue/{venue}")
 def get_events_by_venue(
-        venue: str,
-        repository: Annotated[EventsRepo, Depends(get_repo)],
-        sort_key: SortKey | None = None
+    venue: str,
+    repository: Annotated[EventsRepo, Depends(get_repo)],
+    sort_key: SortKey | None = None,
 ):
     """
     Retrieve the events that are in the given venue
@@ -183,14 +186,15 @@ def get_events_by_venue(
     if sort_key:
         sort_events(sort_key, events)
     return JSONResponse(
-        {"message": [dict(parse_event_to_client(event)) for event in events]})
+        {"message": [dict(parse_event_to_client(event)) for event in events]}
+    )
 
 
 @router.put("/{event_id}")
 def update_event(
-        event_id: uuid.UUID,
-        item: UpdateEventData,
-        repository: Annotated[EventsRepo, Depends(get_repo)],
+    event_id: uuid.UUID,
+    item: UpdateEventData,
+    repository: Annotated[EventsRepo, Depends(get_repo)],
 ):
     """
     Update the event with the given ID
@@ -203,16 +207,15 @@ def update_event(
         event_to_update = repository.get_one(event_id)
     except EventDoesntExists:
         return JSONResponse(
-                {"message": f"Event {event_id} was not found"},
-                status_code=404)
+            {"message": f"Event {event_id} was not found"}, status_code=404
+        )
     if item.new_event_time:
         try:
             event_to_update.update_time(EventTime(value=item.new_event_time))
         except InvalidEventTime:
             return JSONResponse(
-                content={
-                    "message": f"Time should be a future time"},
-                status_code=402
+                content={"message": "Time should be a future time"},
+                status_code=402,
             )
     if item.new_event_title:
         event_to_update.update_title(Title(value=item.new_event_title))
@@ -228,13 +231,14 @@ def update_event(
         )
     repository.update(event_id, event_to_update)
     return JSONResponse(
-        content={"message": f"Event {event_to_update.event_id} was updated"})
+        content={"message": f"Event {event_to_update.event_id} was updated"}
+    )
 
 
 @router.delete("/{event_id}")
 def delete_event(
-        event_id: uuid.UUID,
-        repository: Annotated[EventsRepo, Depends(get_repo)],
+    event_id: uuid.UUID,
+    repository: Annotated[EventsRepo, Depends(get_repo)],
 ):
     """
     Delete the event with the given ID
@@ -247,7 +251,6 @@ def delete_event(
     except EventDoesntExists:
         return JSONResponse(
             content={"message": f"Event {event_id} was not found"},
-            status_code= 404
+            status_code=404,
         )
-    return JSONResponse(
-        content={"message": f"Event {event_id} was deleted"})
+    return JSONResponse(content={"message": f"Event {event_id} was deleted"})

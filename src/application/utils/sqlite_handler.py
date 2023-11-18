@@ -3,12 +3,8 @@ from typing import Any, Dict
 
 
 class SQLiteHandler:
-
     @staticmethod
-    def create_table(
-            db_name: str,
-            table_name: str
-    ):
+    def create_table(db_name: str, table_name: str):
         """
         Create the table for the events project
         :param db_name: the db where the tables at
@@ -18,7 +14,7 @@ class SQLiteHandler:
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
         curs.executescript(
-                    f"""
+            f"""
                     CREATE TABLE "{table_name}" (
                     event_id               TEXT    PRIMARY KEY
                     NOT NULL,
@@ -37,8 +33,8 @@ class SQLiteHandler:
 
     @staticmethod
     def check_if_table_exists(
-            db_name: str,
-            table_name: str,
+        db_name: str,
+        table_name: str,
     ):
         """
         Check if the table is in the db
@@ -50,7 +46,7 @@ class SQLiteHandler:
         curs = conn.cursor()
         curs.execute(
             f"""
-                    SELECT name FROM sqlite_master 
+                SELECT name FROM sqlite_master
                 WHERE type='table' and name = '{table_name}';"""
         )
         res = curs.fetchall()
@@ -67,9 +63,7 @@ class SQLiteHandler:
         """
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
-        curs.execute(
-                f""" SELECT * FROM {table_name}; """
-            )
+        curs.execute(f""" SELECT * FROM {table_name}; """)
         res = curs.fetchall()
         conn.close()
         return res
@@ -92,11 +86,11 @@ class SQLiteHandler:
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
         curs.execute(
-                f"""
+            f"""
                 SELECT * FROM {table_name}
                 WHERE {filter_key} = "{searched_value}";
                 """
-            )
+        )
         res = curs.fetchall()
         conn.close()
         return res
@@ -114,11 +108,12 @@ class SQLiteHandler:
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
         curs.execute(
-                f"""
+            f"""
                 INSERT INTO {table_name}({converted_item["columns"]})
                 VALUES({converted_item["values"]});
-                """, item
-            )
+                """,
+            item,
+        )
         conn.commit()
         conn.close()
 
@@ -135,11 +130,11 @@ class SQLiteHandler:
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
         curs.execute(
-                f"""
+            f"""
                 DELETE FROM {table_name}
                 WHERE {id_column} = "{obj_id}";
                 """
-            )
+        )
         conn.commit()
         conn.close()
 
@@ -166,12 +161,13 @@ class SQLiteHandler:
         conn = sqlite3.connect(db_name)
         curs = conn.cursor()
         curs.execute(
-                f"""
+            f"""
                 UPDATE {table_name}
                 SET {update_str[:-1]}
                 WHERE {id_column} = "{obj_id}";
-                """, new_item
-            )
+                """,
+            new_item,
+        )
         conn.commit()
         conn.close()
 
@@ -187,6 +183,6 @@ class SQLiteHandler:
         columns = ""
         values = ""
         for column in dictionary.keys():
-            columns += f',{column}'
-            values += f', :{column}'
+            columns += f",{column}"
+            values += f", :{column}"
         return {"columns": columns[1:], "values": values[1:]}

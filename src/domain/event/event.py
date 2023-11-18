@@ -84,9 +84,7 @@ class Event:
         """
         return {
             "event_id": str(self.event_id),
-            "event_time": self.event_time.value.strftime(
-                "%m/%d/%Y, %H:%M:%S"
-            ),
+            "event_time": self.event_time.value.strftime("%m/%d/%Y, %H:%M:%S"),
             "title": self.title.value,
             "number_of_participants": self.number_of_participants.value,
             "location": self.location.value,

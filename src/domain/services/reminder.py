@@ -4,7 +4,6 @@ from src.domain.event.event_reposetory import Observer
 
 
 class ReminderService(Observer, ABC):
-
     @abstractmethod
     def reminder(self, time_before: int):
         """
@@ -13,4 +12,3 @@ class ReminderService(Observer, ABC):
         :return: None
         """
         raise NotImplementedError
-    

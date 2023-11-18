@@ -21,8 +21,11 @@ class ReminderServiceImpl(ReminderService):
                 event_to_add["checked"] = False
                 self.events_repo.append(event_to_add)
             case RepoMethod.DELETE:
-                self.events_repo = [e for e in self.events_repo if
-                                    e["event_id"] != details.event_id]
+                self.events_repo = [
+                    e
+                    for e in self.events_repo
+                    if e["event_id"] != details.event_id
+                ]
             case RepoMethod.UPDATE:
                 repo_copy_wo_obj = []
                 for e in self.events_repo:
@@ -51,14 +54,18 @@ class ReminderServiceImpl(ReminderService):
                 check_time = datetime.now()
                 for event in self.events_repo:
                     event_time = datetime.strptime(
-                        event["event_time"], "%m/%d/%Y, %H:%M:%S")
+                        event["event_time"], "%m/%d/%Y, %H:%M:%S"
+                    )
                     if event_time - timedelta(
-                            minutes=30) < datetime.utcnow() < event_time \
-                            and not event.get("checked", False):
+                        minutes=30
+                    ) < datetime.utcnow() < event_time and not event.get(
+                        "checked", False
+                    ):
                         print("its time")
                         logging.debug(
                             f"The event {event['title']}"
-                            f" will start in 30min")
-                        event['checked'] = True
+                            f" will start in 30min"
+                        )
+                        event["checked"] = True
             else:
                 time.sleep(1)

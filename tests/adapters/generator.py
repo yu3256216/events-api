@@ -15,8 +15,9 @@ def event_generator() -> Event:
     Generate an event
     :return: the generated event
     """
-    event_time = datetime.now().replace(
-        tzinfo=timezone.utc) + timedelta(days=100)
+    event_time = datetime.now().replace(tzinfo=timezone.utc) + timedelta(
+        days=100
+    )
     return Event.create(
         event_time=EventTime(value=event_time),
         title=Title(value="test_title"),
