@@ -1,4 +1,5 @@
 import uuid
+from threading import Thread
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -10,6 +11,7 @@ from src.application.schemas.events_schemas import (
     UpdateEventData,
     ReturnableEvent, SortKey,
 )
+from src.application.services.reminder_service import ReminderServiceImpl
 from src.domain.entities.event import Event
 from src.domain.reposetories.event_reposetory import EventsRepo
 from src.domain.vo.events_args import (
@@ -26,6 +28,12 @@ router = APIRouter(
 )
 
 repo = EventsRepositorySQLImpl()
+reminder_service_obj = ReminderServiceImpl()
+repo.add_observer(reminder_service_obj)
+reminder_thread = Thread(
+    target=reminder_service_obj.reminder, args=(30,), daemon=True
+)
+reminder_thread.start()
 
 
 def get_repo():

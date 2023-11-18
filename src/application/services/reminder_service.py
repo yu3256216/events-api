@@ -7,7 +7,7 @@ from src.domain.services.reminder import ReminderService
 from src.domain.vo.events_args import RepoMethod, RepoActionDetails
 
 
-class ReminderServiceImpl(ReminderService, ):
+class ReminderServiceImpl(ReminderService):
     def __init__(self):
         self.events_repo = []
 
@@ -32,16 +32,18 @@ class ReminderServiceImpl(ReminderService, ):
         :param time_before: the time before the event starts to remind
         :return: None
         """
-        events = events_repo.get_all()
         check_time = datetime.now()
+        print("started")
+        logging.debug(msg="Start checking the events for the reminder")
         while True:
             if check_time + timedelta(minutes=1):
                 check_time = datetime.now()
-                for event in events:
-                    if event.event_time.value - timedelta(
-                            minutes=30) == datetime.now().replace(
-                        tzinfo=timezone.utc):
-                        logging.log(
+                for event in self.events_repo:
+                    event_time = datetime.strptime(
+                        event["event_time"], "%m/%d/%Y, %H:%M:%S")
+                    if event_time - timedelta(minutes=30) == datetime.utcnow():
+                        print("its time")
+                        logging.debug(
                             f"The event {event.title.value}"
                             f" will start in 30min")
             else:

@@ -83,7 +83,7 @@ class EventTime(Time):
         validate that the event date is in the future
         :return: None (void function)
         """
-        if self.value < datetime.now().replace(tzinfo=timezone.utc):
+        if self.value < datetime.utcnow().replace(tzinfo=timezone.utc):
             # TODO new exception
             raise ValueError
 
