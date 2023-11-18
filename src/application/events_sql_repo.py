@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import List, Dict
+from typing import List
 
 from src.application.utils.sqlite_handler import SQLiteHandler
 from src.domain.entities.event import Event
@@ -11,7 +11,7 @@ from src.domain.vo.events_args import Venue, Location, Title, \
 
 class EventsRepositorySQLImpl(EventsRepo):
     def __init__(self):
-        self.db_name = "new_events1.db"
+        self.db_name = "events.db"
         self.table_name = "events"
         self.observers = []
         self.setup()
@@ -34,21 +34,22 @@ class EventsRepositorySQLImpl(EventsRepo):
 
     def notify_observers(self, method: RepoMethod, details: RepoActionDetails):
         for observer in self.observers:
-            observer.update(self, method, details)
+            observer.update(method, details)
 
     def add(self, new_event: Event):
         item_to_insert = new_event.as_dict()
         SQLiteHandler.insert(self.db_name, self.table_name, item_to_insert)
-        self.notify_observers(RepoMethod.CREATE,
-                              RepoActionDetails(event_id=new_event.event_id,
-                                                event=item_to_insert))
+        self.notify_observers(method=RepoMethod.CREATE,
+                              details=RepoActionDetails(
+                                  event_id=new_event.event_id,
+                                  event=item_to_insert))
 
     def delete(self, event_id: uuid.UUID):
         SQLiteHandler.delete(
             self.db_name, self.table_name, "event_id", str(event_id)
         )
         self.notify_observers(RepoMethod.DELETE,
-                              RepoActionDetails(event_id=new_event.event_id))
+                              RepoActionDetails(event_id=event_id))
 
     def get_all(self) -> List[Event]:
         data = SQLiteHandler.read_all_table(self.db_name, self.table_name)
