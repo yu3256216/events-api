@@ -21,6 +21,8 @@ from src.domain.event.events_args import (
     Venue,
     Participants,
 )
+from src.domain.event.events_exceptions import EventDoesntExists, \
+    InvalidEventTime
 
 router = APIRouter(
     prefix="/events",
@@ -104,8 +106,14 @@ def schedule_new_event(
     :param repository: The place where the objects are saved in
     :return:
     """
+    try:
+        event_date = EventTime(value=item.event_time)
+    except InvalidEventTime:
+        return JSONResponse(
+            content={
+                "message": f"Time should be a future time"})
     new_event = Event.create(
-        event_time=EventTime(value=item.event_time),
+        event_time=event_date,
         title=Title(value=item.event_title),
         location=Location(value=item.event_location),
         venue=Venue(value=item.event_venue),
@@ -127,11 +135,12 @@ def get_event_by_id(
     :param repository: The place where the objects are saved in
     :return: the event details
     """
-    event = repository.get_one(event_id)
-    if not event:
+    try:
+        event = repository.get_one(event_id)
+    except EventDoesntExists:
         return JSONResponse(
             {"message": f"Event {event_id} was not found"},
-            status_code=400)
+            status_code=404)
     return JSONResponse(
         {"message": dict(parse_event_to_client(event))})
 
@@ -190,13 +199,21 @@ def update_event(
     :param repository: The place where the objects are saved in
     :return:
     """
-    event_to_update = repository.get_one(event_id)
-    if not event_to_update:
+    try:
+        event_to_update = repository.get_one(event_id)
+    except EventDoesntExists:
         return JSONResponse(
-            {"message": f"Event {event_id} was not found"},
-            status_code=400)
+                {"message": f"Event {event_id} was not found"},
+                status_code=404)
     if item.new_event_time:
-        event_to_update.update_time(EventTime(value=item.new_event_time))
+        try:
+            event_to_update.update_time(EventTime(value=item.new_event_time))
+        except InvalidEventTime:
+            return JSONResponse(
+                content={
+                    "message": f"Time should be a future time"},
+                status_code=402
+            )
     if item.new_event_title:
         event_to_update.update_title(Title(value=item.new_event_title))
     if item.new_event_venue:
@@ -225,6 +242,12 @@ def delete_event(
     :param repository: The place where the objects are saved in
     :return:
     """
-    repository.delete(event_id)
+    try:
+        repository.delete(event_id)
+    except EventDoesntExists:
+        return JSONResponse(
+            content={"message": f"Event {event_id} was not found"},
+            status_code= 404
+        )
     return JSONResponse(
         content={"message": f"Event {event_id} was deleted"})

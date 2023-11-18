@@ -5,6 +5,7 @@ from src.domain.event.event import Event
 from src.domain.event.event_reposetory import EventsRepo, Observer
 from src.domain.event.events_args import Venue, Location, RepoMethod, \
     RepoActionDetails
+from src.domain.event.events_exceptions import EventDoesntExists
 
 
 class EventsRepositoryImpl(EventsRepo):
@@ -33,12 +34,11 @@ class EventsRepositoryImpl(EventsRepo):
                                                 event=new_event.as_dict()))
 
     def delete(self, event_id: uuid.UUID):
-        og_len = len(self.events)
+        _ = self.get_one(event_id)
         self.events = [event for event in self.events if
                        event.event_id != event_id]
         self.notify_observers(RepoMethod.DELETE,
                               RepoActionDetails(event_id=event_id))
-        return og_len != len(self.events)
 
     def get_all(self) -> List[Event]:
         return self.events
@@ -47,6 +47,7 @@ class EventsRepositoryImpl(EventsRepo):
         for event in self.events:
             if event.event_id == event_id:
                 return event
+        raise EventDoesntExists
 
     def get_by_location(self, required_location: Location) -> List[Event]:
         return [
@@ -71,5 +72,4 @@ class EventsRepositoryImpl(EventsRepo):
                                       event_id=new_event.event_id,
                                       event=new_event.as_dict()))
             return True
-        else:
-            return False
+        raise EventDoesntExists

@@ -73,6 +73,7 @@ class EventsRepo(ABC):
         delete an event from the repo
         :param event_id: the event's id to delete
         :return: None
+        :raises: EventDoesntExists: if the event wasn't found
         """
         raise NotImplementedError
 
@@ -118,5 +119,6 @@ class EventsRepo(ABC):
         :param event_id: the id of the event to update
         :param new_event: the new values of the event
         :return: the found events in the repo
+        :raises: EventDoesntExists: if the event wasn't found
         """
         raise NotImplementedError

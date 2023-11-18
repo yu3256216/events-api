@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, Optional
 
+from src.domain.event.events_exceptions import InvalidEventTime
+
 
 @dataclass
 class BaseVO(ABC):
@@ -84,8 +86,7 @@ class EventTime(Time):
         :return: None (void function)
         """
         if self.value < datetime.utcnow().replace(tzinfo=timezone.utc):
-            # TODO new exception
-            raise ValueError
+            raise InvalidEventTime
 
 
 class RepoMethod(Enum):

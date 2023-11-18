@@ -4,6 +4,7 @@ from typing import Any
 
 import pytest
 
+from src.domain.event.events_exceptions import InvalidEventTime
 from src.domain.event.events_args import (
     Title,
     Location,
@@ -128,5 +129,5 @@ def test_create_invalid_event_time():
     """
     time_value = datetime.utcnow().replace(
             tzinfo=timezone.utc) - timedelta(minutes=10)
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidEventTime):
         _ = EventTime(value=time_value)

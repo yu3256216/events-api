@@ -126,7 +126,7 @@ class TestEventsRoutes:
             self.test_repo.get_one,
         )
         response = client.get(f"/events/{str(uuid.uuid4())}")
-        assert response.status_code == 400
+        assert response.status_code == 404
 
     def test_get_events_by_location(self, client, mocker):
         mocker.patch(
@@ -219,7 +219,7 @@ class TestEventsRoutes:
                                   "new_event_location": "changed",
                                   "new_event_venue": "changed",
                               })
-        assert response.status_code == 400
+        assert response.status_code == 404
 
     def test_delete_event(self, client, mocker):
         mocker.patch(
@@ -233,17 +233,10 @@ class TestEventsRoutes:
         assert response.status_code == 200 and not any([
             e.event_id == event.event_id for e in repo_after_change])
 
-    # def test_delete_new_event(self, client, mocker):
-    #     mocker.patch(
-    #         'src.application.events_sql_repo.EventsRepositorySQLImpl.get_all',
-    #         self.test_repo.get_all,
-    #     )
-    #     response = client.post("/events",
-    #                            data={
-    #                                "event_title": "Yuv1",
-    #                                "event_location": "Ramat Hasharon",
-    #                                "event_venue": "Mi Casa",
-    #                                "number_of_participants": 10,
-    #                                "event_time": "2023-12-10T10:51:36.347Z"
-    #                            })
-    #     assert response.status_code == 200
+    def test_delete_new_event(self, client, mocker):
+        mocker.patch(
+            'src.application.events_sql_repo.EventsRepositorySQLImpl.delete',
+            self.test_repo.delete,
+        )
+        response = client.delete(f"/events/{str(uuid.uuid4())}")
+        assert response.status_code == 404
